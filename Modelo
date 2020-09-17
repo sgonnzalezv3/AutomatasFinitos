@@ -1,0 +1,506 @@
+// @author Santiago Gonzalez
+package Modelo;
+
+public class Modelo {
+    public String estado;
+    public boolean estadoAcepta;
+    public int inicioCadena;
+    public int posLectura[] = new int[1];
+    public char procesoCorreo(String lexema) {
+        boolean valido;
+        valido = automataCorreo(lexema);
+        if (valido) {
+        } else {
+            estado = "inicial";
+        }
+        return lexema.charAt(posLectura[0]);
+    }
+
+    public char procesoEnteros(String lexema) {
+        boolean valido;
+        valido = automataEnteros(lexema);
+        if (valido) {
+        } else {
+            estado = "inicial";
+        }
+        return lexema.charAt(posLectura[0]);
+    }
+
+    public char procesoReales(String lexema) {
+        boolean valido;
+        valido = automatareales(lexema);
+        if (valido) {
+        } else {
+            estado = "inicial";
+        }
+        return lexema.charAt(posLectura[0]);
+    }
+
+    public char procesoCientificos(String lexema) {
+        boolean valido;
+        valido = automataCientifico(lexema);
+        if (valido) {
+        } else {
+            estado = "inicial";
+        }
+        return lexema.charAt(posLectura[0]);
+    }
+
+    public boolean automataEnteros(String lexema) {
+        posLectura[0] = 0;
+        estado = "inicial";
+        estadoAcepta = false;
+        char caracter;
+        for (int i = 0; i < lexema.length(); i++) {
+            caracter = lexema.charAt(i);
+            switch (estado) {
+                case "inicial":
+                    if (Character.isDigit(caracter)) {
+                        estado = "entero";
+                        estadoAcepta = true;
+                        break;
+                    } else {
+                        if ((caracter == '+' || caracter == '-') && lexema.length() - (i + 1) != 0) {
+                            estadoAcepta = true;
+                            estado = "entero";
+                            break;
+
+                        } else {
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            estado = "";
+                            break;
+                        }
+                    }
+
+                case "q1":
+                    if (Character.isDigit(caracter)) {
+
+                        estado = "entero";
+                        estadoAcepta = true;
+                        break;
+                    } else {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    }
+                case "entero":
+                    System.out.println("es" + caracter);
+                    if (Character.isDigit(caracter)) {
+                        estado = "entero";
+                        estadoAcepta = true;
+                        break;
+                    } else {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        return estadoAcepta;
+    }
+
+    public boolean automatareales(String lexema) {
+        posLectura[0] = 0;
+        estado = "inicial";
+        estadoAcepta = false;
+        char caracter;
+        for (int i = inicioCadena; i < lexema.length(); i++) {
+            caracter = lexema.charAt(i);
+            switch (estado) {
+                case "inicial":
+
+                    if (Character.isDigit(caracter)) {
+                        estado = "entero";
+                        estadoAcepta = true;
+                        break;
+
+                    } else {
+                        if ((caracter == '+' || caracter == '-') && lexema.length() - (i + 1) != 0) {
+                            estado = "q1";
+                            estadoAcepta = true;
+                            break;
+                        } else {
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            estado = "";
+                            break;
+                        }
+                    }
+                case "q1":
+
+                    if (Character.isDigit(caracter)) {
+                        estado = "entero";
+                        estadoAcepta = true;
+                        break;
+                    } else {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    }
+                case "entero":
+                    if (Character.isDigit(caracter)) {
+                        estado = "entero";
+                        estadoAcepta = true;
+                        break;
+
+                    } else {
+
+                        if (caracter == '.') {
+                            if (lexema.length() - i == 1) {
+
+                                estadoAcepta = false;
+                                posLectura[0] = i;
+                                estado = "";
+                                break;
+
+                            } else {
+                                estado = "q2";
+                                estadoAcepta = true;
+                                break;
+
+                            }
+
+                        } else {
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            estado = "";
+                            break;
+
+                        }
+                    }
+                case "q2":
+
+                    if (Character.isDigit(caracter)) {
+
+                        estado = "real";
+                        estadoAcepta = true;
+                        break;
+                    } else {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    }
+                case "real":
+
+                    if (Character.isDigit(caracter)) {
+                        estado = "real";
+                        estadoAcepta = true;
+                        break;
+                    } else {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    }
+
+            }
+        }
+
+        return estadoAcepta;
+    }
+
+    public boolean automataCientifico(String lexema) {
+        int contador = 0;
+        posLectura[0] = 0;
+        estado = "inicial";
+        estadoAcepta = false;
+        char caracter;
+        for (int i = inicioCadena; i < lexema.length(); i++) {
+            caracter = lexema.charAt(i);
+            switch (estado) {
+                case "inicial":
+                    if ((lexema.length() - (i + 1)) == 0) {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    } else {
+                        if (lexema.length() - (i + 1) == 0 && caracter != '.') {
+                            estado = "";
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                        } else {
+                            if (Character.isDigit(caracter)) {
+                                estadoAcepta = true;
+                                estado = "entero";
+                                break;
+                            } else {
+                                if (caracter == '+' || caracter == '-') {
+                                    estado = "entero";
+                                    estadoAcepta = true;
+                                    break;
+                                } else {
+                                    estadoAcepta = false;
+                                    posLectura[0] = i;
+                                    estado = "";
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+
+                case "q1":
+                    if (Character.isDigit(caracter)) {
+                        estado = "entero";
+                        estadoAcepta = true;
+                        break;
+                    } else {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    }
+                case "entero":
+                    if (Character.isDigit(caracter) && (lexema.length() - (i + 1)) != 0) {
+                        estadoAcepta = true;
+                        estado = "entero";
+                        break;
+                    } else {
+                        if (caracter == '.' && (lexema.length() - (i + 1)) != 0) {
+                            estado = "q2";
+                            break;
+                        } else {
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            estado = "";
+                            break;
+                        }
+                    }
+                case "q2":
+                    if (lexema.length() - (i + 1) != 0 && Character.isDigit(caracter)) {
+                        estadoAcepta = true;
+                        estado = "q2";
+                        break;
+                    } else {
+                        if ((caracter == 'e' || caracter == 'E') && (lexema.length() - (i + 1)) != 0) {
+                            estado = "cientifico";
+                            estadoAcepta = true;
+                        } else {
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            estado = "";
+                            break;
+                        }
+
+                    }
+                    break;
+                case "cientifico":
+                    if (Character.isDigit(caracter) && contador != 0) {
+                        estadoAcepta = true;
+                        estado = "cientifico";
+                        break;
+                    } else {
+                        if ((caracter == '+' || caracter == '-') && contador == 0 && lexema.length() - ((i + 1)) != 0 ) {
+                            estado = "cientifico";
+                            estadoAcepta = true;
+                            contador++;
+                            break;
+                        } else {
+                            estado = "";
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            break;
+                        }
+                    }
+            }
+
+        }
+        return estadoAcepta;
+    }
+
+    public boolean automataCorreo(String lexema) {
+        int contador3 = 0;
+        int contador2 = 0;
+        int contador = 0;
+        int contador1 = 0;
+        posLectura[0] = 0;
+        estado = "inicial";
+        estadoAcepta = false;
+        char caracter;
+        for (int i = inicioCadena; i < lexema.length(); i++) {
+            caracter = lexema.charAt(i);
+            switch (estado) {
+                case "inicial":
+
+                    if (Character.isDigit(caracter)) {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    } else {
+                        if ((lexema.length() - (i + 1)) == 0) {
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            estado = "";
+                            break;
+                        } else {
+                            if (Character.isLetter(caracter)) {
+                                estado = "cadCorreo";
+                                estadoAcepta = true;
+                            }
+
+                        }
+                    }
+                    break;
+                case "cadCorreo":
+                    if ((lexema.length() - (i + 1)) == 0) {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    } else {
+                        if (lexema.length() - (i + 1) == 0 && caracter != '@') {
+                            estado = "";
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            break;
+                        } else {
+                            if (Character.isLetterOrDigit(caracter) && i < 11) {
+                                estado = "cadCorreo";
+                                estadoAcepta = true;
+                            } else {
+                                if (caracter == '@') {
+                                    estado = "q1";
+                                    estadoAcepta = true;
+                                } else {
+                                    estadoAcepta = false;
+                                    posLectura[0] = i;
+                                    estado = "";
+                                    break;
+
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                case "q1":
+                    if (contador2 == 0 && !Character.isLetter(caracter)) {
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        estado = "";
+                        break;
+                    } else {
+                        if (lexema.length() - (i + 1) == 0 && caracter == '.') {
+                            estado = "";
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            break;
+                        } else {
+                            if (contador3 < 11 && Character.isLetterOrDigit(caracter)) {
+                                estado = "q1";
+                                estadoAcepta = true;
+                            } else {
+                                if (caracter == '.') {
+                                    estado = "letraMin";
+                                    estadoAcepta = true;
+                                } else {
+                                    estadoAcepta = false;
+                                    posLectura[0] = i;
+                                    estado = "";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    contador2++;
+                    contador3++;
+                    break;
+
+                case "letraMin":
+                    try {
+                        if (!Character.isLetter(lexema.charAt(lexema.length() - 6))) {
+                            estado = "";
+                            estadoAcepta = false;
+                            posLectura[0] = i;
+                            break;
+                        } else {
+                            if (!Character.isLetter(lexema.charAt(lexema.length() - 5))) {
+                                estado = "";
+                                estadoAcepta = false;
+                                posLectura[0] = i + 1;
+                                break;
+
+                            } else {
+                                if (!Character.isLetter(lexema.charAt(lexema.length() - 4))) {
+                                    estado = "";
+                                    estadoAcepta = false;
+                                    posLectura[0] = i + 2;
+                                    break;
+                                } else {
+                                    if ((lexema.charAt(lexema.length() - 7)) != '.' && (lexema.length() - (i + 1) == 0)) {
+                                        estado = "";
+                                        estadoAcepta = false;
+                                        posLectura[0] = i;
+                                        break;
+                                    } else {
+                                        if (contador < 3 && Character.isLowerCase(caracter)) {
+                                            estado = "letraMin";
+                                            estadoAcepta = true;
+                                        } else {
+                                            if (caracter == '.') {
+                                                estado = "q2";
+                                                estadoAcepta = true;
+                                            } else {
+                                                estadoAcepta = false;
+                                                posLectura[0] = i;
+                                                estado = "";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        contador++;
+
+                    } catch (Exception e) {
+                        estadoAcepta = false;
+                        estado = "";
+                        break;
+                    }
+                    break;
+                case "q2":
+                    if (!Character.isLetter(lexema.charAt(lexema.length() - 2))) {
+                        estado = "";
+                        estadoAcepta = false;
+                        posLectura[0] = i;
+                        break;
+
+                    } else {
+                        if (!Character.isLetter(lexema.charAt(lexema.length() - 1))) {
+                            estado = "";
+                            estadoAcepta = false;
+                            posLectura[0] = i + 1;
+                            break;
+                        } else {
+                            if (contador1 < 2 && Character.isLowerCase(caracter)) {
+                                estado = "q2";
+                                estadoAcepta = true;
+                            } else {
+                                estadoAcepta = false;
+                                posLectura[0] = i;
+                                estado = "";
+                                break;
+                            }
+                        }
+
+                    }
+
+                    contador1++;
+                    break;
+            }
+        }
+        return estadoAcepta;
+    }
+
+}
