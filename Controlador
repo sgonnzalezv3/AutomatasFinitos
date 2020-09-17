@@ -1,0 +1,171 @@
+package Controlador;
+
+import Modelo.Modelo;
+import Vista.Ventana;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Controlador implements ActionListener {
+
+    private Ventana view;
+    private Modelo model;
+
+    public Controlador(Ventana view, Modelo model) {
+        this.view = view;
+        this.model = model;
+        view.JBComprobar.addActionListener(this);
+    }
+
+    public void guia1(boolean campo, char letra) {
+        if (campo == true) {
+            view.resultado1.setText(" El valor es entero");
+        } else {
+            if (view.Campo1.getText().length() == 0) {
+                view.resultado1.setText("DIGITE VALORES!!!");
+            } else {
+                view.resultado1.setText(" a partir de [" + letra + "] " + " no pertenece a enteros");
+            }
+
+        }
+
+    }
+
+    public void guia2(boolean campo, char letra) {
+        if (campo == true) {
+            view.resultado2.setText("El valor es real");
+        } else {
+            if (view.Campo2.getText().length() == 0) {
+                view.resultado2.setText("DIGITE VALORES!!!");
+            } else {
+                view.resultado2.setText(" a partir de [" + letra + "] " + " no pertenece a enteros");
+            }
+        }
+
+    }
+
+    public void guia3(boolean campo, char letra) {
+        System.out.println("perrohpta"+campo);
+        if (campo == true) {
+            view.resultado3.setText(" El valor es Cientifico");
+        } else {
+            if (view.Campo3.getText().length() == 0) {
+                view.resultado3.setText("DIGITE VALORES!!!");
+            } else {
+                view.resultado3.setText(" a partir de [" + letra + "] " + " no pertenece a enteros");
+            }
+
+        }
+    }
+
+    public void guia4(boolean campo, char letra) {
+        if (view.Campo4.getText().length() == 0) {
+            view.resultado4.setText("DIGITE VALORES!!!");
+
+        } else {
+            if (view.Campo4.getText().length() < 7) {
+                view.resultado4.setText("Faltan o sobran valores en el correo");
+            } else {
+                if (view.Campo4.getText().length() == 0) {
+                    view.resultado4.setText("DIGITE VALORES!!!");
+                } else {
+                    if ((view.Campo4.getText().length() - 7 != 0) && (view.Campo4.getText().charAt(view.Campo4.getText().length() - 7) != '.')) {
+                        view.resultado4.setText("Faltan o sobran valores en el correo despues del primer (.)");
+                    } else {
+                        if (view.Campo4.getText().length() == 0) {
+                            view.resultado4.setText("DIGITE VALORES!!!");
+                        } else {
+                            if (campo == true) {
+                                if (view.Campo4.getText().length() == 0) {
+
+                                } else {
+
+                                }
+                                view.resultado4.setText("Correo Correcto!!!");
+                            } else {
+                                view.resultado4.setText("ERROR!! El caracter [" + letra + "] No está permitido!!!");
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
+    public void campo1(boolean campo) {
+        if (campo == true) {
+            view.Color1.setBackground(Color.green);
+        } else {
+            view.Color1.setBackground(Color.red);
+        }
+
+    }
+
+    public void campo2(boolean campo) {
+        if (campo == true) {
+            view.Color2.setBackground(Color.green);
+        } else {
+            view.Color2.setBackground(Color.red);
+        }
+    }
+
+    public void campo3(boolean campo) {
+        if (campo == true) {
+            view.Color3.setBackground(Color.green);
+        } else {
+            view.Color3.setBackground(Color.red);
+        }
+    }
+
+    public void campo4(boolean campo) {
+        if (campo == true) {
+            view.Color4.setBackground(Color.green);
+        } else {
+            view.Color4.setBackground(Color.red);
+        }
+    }
+
+    public void iniciar() {
+
+        view.setLocationRelativeTo(null);
+
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == view.JBComprobar) {
+            String campo1 = view.Campo1.getText();
+            campo1(model.automataEnteros(campo1));
+            String campo2 = view.Campo2.getText();
+            campo2(model.automatareales(campo2));
+            String campo3 = view.Campo3.getText();
+            campo3(model.automataCientifico(campo3));
+            String campo4 = view.Campo4.getText();
+            campo4(model.automataCorreo(campo4));
+            if (campo4.length() == 0) {
+                guia4(model.automataCorreo(campo4), ' ');
+            } else {
+                guia4(model.automataCorreo(campo4), model.procesoCorreo(campo4));
+            }
+            if (campo1.length() == 0) {
+                guia1(model.automataEnteros(campo1), ' ');
+            } else {
+                guia1(model.automataEnteros(campo1), model.procesoEnteros(campo1));
+            }
+            if (campo2.length() == 0) {
+                guia2(model.automatareales(campo2), ' ');
+            } else {
+                guia2(model.automatareales(campo2), model.procesoReales(campo2));
+            }
+            if (campo3.length() == 0) {
+                guia3(model.automataCientifico(campo3), ' ');
+            } else {
+                guia3(model.automataCientifico(campo3), model.procesoCientificos(campo3));
+            }
+
+        }
+    }
+
+}
